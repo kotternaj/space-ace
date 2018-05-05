@@ -13,3 +13,10 @@ def load_fonts(text, size, color):
     space_font = font.render(text, 1, color)
     return space_font
 
+class Stars(pygame.sprite.Sprite):
+    pygame.sprite.Sprite.__init_(self)
+    self.image = pygame.Surface((3,3))
+    self.image = self.image.convert()
+    self.image.fill(color)
+    self.rect = rect  
+    
