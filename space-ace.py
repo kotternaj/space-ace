@@ -24,11 +24,18 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.move_ip(0,10)
 
 class Stars(pygame.sprite.Sprite):
-    pygame.sprite.Sprite.__init_(self)
-    self.image = pygame.Surface((3,3))
-    self.image = self.image.convert()
-    self.image.fill(color)
-    self.rect = rect  
-    
+    def __init__(self, rect, color):
+        pygame.sprite.Sprite.__init_(self)
+        self.image = pygame.Surface((3,3))
+        self.image = self.image.convert()
+        self.image.fill(color)
+        self.rect = rect  
+
+class Static_Image(pygame.sprite.Sprite):
+    def __init__(self, file_name, rect):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = load_image(file_name)
+        self.rect = pygame.Rect(rect)
+
 if __name__ == '__main__':
     main()
