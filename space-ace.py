@@ -13,6 +13,31 @@ def load_fonts(text, size, color):
     space_font = font.render(text, 1, color)
     return space_font
 
+class Ship(pygame.sprite.Sprite):
+    def __init__(self, character):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = load_image(character)
+        self.rect = self.image.get_rect()
+        self.rect.top = 770
+        self.rect.left = 685
+        self.x_dist = 50
+        self.y_dist = 50
+        self.is_alive = True
+    
+    def move(self, key, screen_rect):
+        xMove = 0
+        yMove = 0
+        if (key == pygame.K_RIGHT):
+            xMove = self.x_dist
+        elif (key == pygame.K_LEFT):
+            xMove = -self.x_dist
+        elif (key == pygame.K_DOWN):
+            yMove = self.y_dist
+        elif (key == pygame.K_UP):
+            yMove = -self.y_dist
+        self.rect.move_ip(xMove, yMove)
+        self.rect.clamp_ip(screen_rect)
+
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, image_file, x_axis):
         # Call parent class (Sprite) constructor
