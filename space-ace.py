@@ -13,6 +13,17 @@ def load_fonts(text, size, color):
     space_font = font.render(text, 1, color)
     return space_font
 
+def game_over(self):
+    # Clear previous surface
+    self.asteroid_sprites.clear(self.scree, self.background)
+    self.asteroid_sprites.empty()
+    # Load text font and images
+    self.font_gameover = load_fonts('Game Over', 95, (42, 247, 44))
+    self.font_final_score = load_fonts('Score: %d' %self.score 50, (255, 255, 255))
+    self.enter_initials = load_fonts('Enter initials: ', 50, 2(55, 255, 255))
+
+
+
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
         pygame.sprite.Sprite.__init__(self)
