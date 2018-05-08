@@ -84,15 +84,15 @@ def load_fonts(text, size, color):
             self.ship_sprites = self.load_ship_sprite(self.character)
             self.ship_sprites.draw(self.screen)
             self.asteroid_sprites = pygame.sprite.Group()
-            pygame.display.update()
+            pygame.display.update()    
     
-    
-
     def load_ship_sprite(self, character):
         # Create and assign new Ship objectt to sprite group
         self.ship = Ship(character)
         self.ship_sprites = pygame.sprite.Group(self.ship)
         return self.ship_sprites
+    
+    def load_intro(self):
         
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
