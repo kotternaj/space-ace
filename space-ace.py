@@ -62,6 +62,32 @@ def load_fonts(text, size, color):
         static_image_group.draw(self.screen)
         pygame.display.update()
     
+    def stage_one(self, reset):
+        if reset:
+            if self.lives == 0:
+                self.level = "game_over"
+                self.game_over()
+            else:
+                self.screen.blit(self.font_score, [1180, 870])
+                self.ship_sprites = self.load_ship_sprite(self.character)
+                self.ship_sprites.draw(self.screen)
+                self.asteroid_sprites.empty()
+                self.stage_time = time.time()
+        else:
+            # Clear previous surface
+            self.screen.fill((0,0,0,))
+            self.star_sprites.clear(self.screen, self.background)
+            self.star_sprites.empty()
+            # Reset game variables
+            self.stage_time = time.time()
+            self.screen.blit(self.health_bar_surface, [844, 215])
+            self.ship_sprites = self.load_ship_sprite(self.character)
+            self.ship_sprites.draw(self.screen)
+            self.asteroid_sprites = pygame.sprite.Group()
+            pygame.display.update()
+    
+    
+
     def load_ship_sprite(self, character):
         # Create and assign new Ship objectt to sprite group
         self.ship = Ship(character)
