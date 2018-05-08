@@ -93,6 +93,33 @@ def load_fonts(text, size, color):
         return self.ship_sprites
     
     def load_intro(self):
+        # Load all saved player records
+        try:
+            PyMain.score_array = []
+            player_scores_file = open("player_scores.txt", "r+b")
+            # Each tuple contains the player's initials and their score
+            PyMain.player_scores_tuple = pickle.load(player_scores_file)
+            player_scores_file.close()
+            # Prevent placeholder scores from being displayed
+            if len(PyMain.player_scores_tuple) < 7:
+                PyMain.players_total = PyMain.total_player_records[len(PyMain.player_scores_tuple)]
+            else:
+                PyMain.players_total = PyMain.total_player_records[6]
+            # Assign all scores to PyMain.score_array
+            for tuple_pair in PyMain.player_scores_tuple:
+                PyMain.score_array.append(tuple_pair[1])
+
+            PyMain.score_array_sorted = sorted(PyMain.score_array)
+            reversed_score = PyMain.score_array_sorted[::-1]
+            PyMain.top_three_scores = reversed_score[0:3]
+
+            PyMain.player_names = []
+            for i in range(0,3):
+                for tuple_pair in PyMain.player_scores_tuple:
+                    if PyMain.top_three_scores[i] in tuple_pair:
+                        PyMain.player_names.append(tuple_pair[0])
+        except:
+            print "Failed to open file."
 
     def update_star_sprites(self):
         colors = [(0, 0, 255), (255, 255, 255), (255, 0, 0)]
