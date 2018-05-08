@@ -121,6 +121,31 @@ def load_fonts(text, size, color):
         except:
             print "Failed to open file."
 
+        self.score_cover = pygame.Surface((300, 300))
+        self.score_cover.fill((0,0,0))
+        font_space_header = load_fonts('Space Ace', 95 (42, 247, 44))
+        font_press_to_start = load_fonts('Press Enter to Start', 30, (191, 0, 255))
+        rfont_space_header = self.screen.blit(font_space_header, [290, 145])
+        rfont_press_to_start = self.screen.blit(font_press_to_start, [415, 375])
+        rfont_press_to_start.width = 250
+        rfont_press_to_start.width = 60
+        self.font_top_scores = load_fonts('TOP SCORES ', 30, (255, 255, 255))
+        self.font_score_one = load_fonts('%s, %s' % (PyMain.player_names[0], PyMain.top_three_scores[0]), 30, (255, 255, 255))
+        self.font_score_two = load_fonts('%s, %s' % (PyMain.player_names[1], PyMain.top_three_scores[1]), 30, (255, 255, 255))
+        self.font_score_three = load_fonts('%s, %s' % (PyMain.player_names[2], PyMain.top_three_scores[2]), 30, (255, 255, 255))
+        # Create star sprites
+        numHorizontal = int(self.width / 50)
+        numVertical = int(self.height / 50)
+        self.star_sprites = pygame.sprite.Group()
+
+        for i in range(numHorizontal * 2):
+            x = random.randint(0, numHorizontal) * 50
+            y = random.randint(0, numVertical) * 50
+            if x not in range(290, 1135) or y not in range(145, 420):
+                self.star_sprites.add(Stars(pygame.Rect(x, y, 50, 50), (255, 255, 255)))
+
+        return rfont_space_header, rfont_press_to_start
+
     def update_star_sprites(self):
         colors = [(0, 0, 255), (255, 255, 255), (255, 0, 0)]
         numHorizontal = int(self.width / 50)
