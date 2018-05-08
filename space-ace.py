@@ -61,7 +61,12 @@ def load_fonts(text, size, color):
         # Draw static_image_group to screen
         static_image_group.draw(self.screen)
         pygame.display.update()
-        
+    
+    def load_ship_sprite(self, character):
+        # Create and assign new Ship objectt to sprite group
+        self.ship = Ship(character)
+        self.ship_sprites = pygame.sprite.Group(self.ship)
+        return self.ship_sprites
         
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
