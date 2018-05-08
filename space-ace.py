@@ -93,6 +93,20 @@ def load_fonts(text, size, color):
         return self.ship_sprites
     
     def load_intro(self):
+
+    def update_star_sprites(self):
+        colors = [(0, 0, 255), (255, 255, 255), (255, 0, 0)]
+        numHorizontal = int(self.width / 50)
+        numVertical = int(self.height / 50)
+        self.star_sprites = pygame.sprite.Group()
+        time.sleep(0.75)
+
+        for i in range(numHorizontal * 2):
+            x = random.randint(0, numHorizontal) * 50
+            y = random.randint(0, numVertical) * 50
+            if x not in range(290, 1135) or y not in range(145, 420):
+                self.star_sprites.add(Stars(pygame.Rect(x, y, 50, 50), random.choice(colors)))
+    
         
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
