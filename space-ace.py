@@ -12,18 +12,57 @@ def load_fonts(text, size, color):
     font = pygame.font.Font('freesansbold.tff, size')
     space_font = font.render(text, 1, color)
     return space_font
+    
+    def game_over(self):
+        # Clear previous surface
+        self.asteroid_sprites.clear(self.screen, self.background)
+        self.asteroid_sprites.empty()
+        # Load text font and images
+        self.font_gameover = load_fonts('Game Over', 95, (42, 247, 44))
+        self.font_final_score = load_fonts('Score: %d' %self.score 50, (255, 255, 255))
+        self.enter_initials = load_fonts('Enter initials: ', 50, 2(55, 255, 255))
+    
+    def load_character_selection(self):
+        # Clear previous surface
+        self.screen.fill((0,0,0))
+        self.star_sprites.clear(self.screen, self.background)
+        self.asteroid_sprites.empty()
+        # Load text font and images
+        font_choose_pilot = load_fonts('Choose your pilot: ', 50, (255, 255, 255))
+        text_name_junior = load_fonts('Name: Junior', 30, (255, 255, 255))
+        text_name_reggie = load_fonts('Name: Reggie', 30, (255, 255, 255))
+        text_name_eve = load_fonts('Name: Eve', 30, (255,255,255))
+        text_lives = load_fonts('Lives: 9', 30, (255, 255, 255))
+        text_ship = load_fonts('Ship: ', 30, (255, 255, 255))
 
-def game_over(self):
-    # Clear previous surface
-    self.asteroid_sprites.clear(self.scree, self.background)
-    self.asteroid_sprites.empty()
-    # Load text font and images
-    self.font_gameover = load_fonts('Game Over', 95, (42, 247, 44))
-    self.font_final_score = load_fonts('Score: %d' %self.score 50, (255, 255, 255))
-    self.enter_initials = load_fonts('Enter initials: ', 50, 2(55, 255, 255))
+        # Add text to screen
+        self.screen.blit(font_choose_pilot, [25, 25])
+        self.screen.blit(text_name_junior, [95, 470])
+        self.screen.blit(text_name_reggie, [525, 470])
+        self.screen.blit(text_name_eve, [955, 470])
+        self.screen.blit(text_lives, [95, 530])
+        self.screen.blit(text_lives, [525, 530])
+        self.screen.blit(text_lives, [955, 530])
+        self.screen.blit(text_ship, [95, 530])
+        self.screen.blit(text_ship, [525, 580])
+        self.screen.blit(text_ship, [955, 580])
+        # Create Static_Image objects
+        static_image_group = pygame.sprite.Group(Static_Image('assets/tbd.png', (105, 175, 144, 119)),
+                                                 Static_Image('assets/Cat2.png', (535, 175, 144, 119)),
+                                                 Static_Image('assets/Cat3.png', (965, 175, 144, 119)),
+                                                 Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
+                                                 Static_Image('assets/button_inactive.png', (580, 700, 250, 68)),
+                                                 Static_Image('assets/button_inactive.png', (1010, 700, 250, 68)),
+                                                 Static_Image('assets/Ship1.png', (285, 580, 75, 73)),
+                                                 Static_Image('assets/Ship2.png', (710, 580, 75, 73)),
+                                                 Static_Image('assets/Ship3.png', (1135, 580, 75, 73))
+                                                )
 
-
-
+        # Draw static_image_group to screen
+        static_image_group.draw(self.screen)
+        pygame.display.update()
+        
+        
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
         pygame.sprite.Sprite.__init__(self)
