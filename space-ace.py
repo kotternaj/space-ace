@@ -12,6 +12,199 @@ def load_fonts(text, size, color):
     font = pygame.font.Font('freesansbold.tff, size')
     space_font = font.render(text, 1, color)
     return space_font
+
+class PyMain(object):
+    ### Set placeholder player records in the event that the player_scores.txt file does not exist
+    score_array = [0,0,0]
+    player_names = ["$$$","###","***"]
+    player_scores_tuple = [("$$$",0), ("###",0), ("***", 0)]
+    # If less than 6 records, do not display placeholder records on intro page
+    total_player_records = {
+         3: (570, 600),
+         4: (570, 650),
+         5: (570, 700),
+         6: (570, 900)
+    }
+    players_total = total_player_records[len(player_scores_tuple)]
+    top_three_scores = [0,0,0]
+
+    def __init__(self, width=1439, height=899):
+        pygame.init()
+        #Set window size
+        self.width  = width
+        self.height = height
+        #This function will create a display surface; it will initialize a window or screen for display
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+        self.screen_rect = self.screen.get_rect()
+        self.caption = pygame.display.set_caption("Space Ace")
+        #Create background surface
+        self.background = pygame.Surface(self.screen.get_size()).convert()
+        #Create game_screen surface referenced in PyMain.stage_one()
+        self.game_screen = pygame.Surface((1439, 844)).convert()
+        self.game_screen_rect = self.game_screen.get_rect()
+        #Load background images
+        self.stage_background = load_image("assets/space_background.png")
+        self.health_bar_surface = load_image("assets/health_bar_100.png")
+        #Set game attributes
+        self.score = 0
+        self.lives = 3
+        self.level = "intro"
+
+    def MainLoop(self):
+        first_initial = "-"
+        middle_initial = "-"
+        last_initial = "-"
+        full_initials = "%s%s%s" % (first_initial, middle_initial, last_initial)
+        # Game condition variables
+        y = 0
+        self.time_hit = 0
+        self.load_intro()
+        # Main game loop
+        while self.level != "restart":
+            # Creates stage_one scrolling background
+            rel_y = y % self.stage_background.get_rect().height
+            if self.level == "intro":
+                self.screen.blit(self.font_top_scores, [550, 500])
+                self.screen.blit(self.font_score_one, [575, 600])
+                self.screen.blit(self.font_score_two, [575, 650])
+                self.screen.blit(self.font_score_three, [575, 700])
+                self.screen.blit(self.score_cover, PyMain.players_total)
+                self.star_sprites.draw(self.screen)
+                pygame.display.update()
+                self.star_sprites.clear(self.screen, self.background)
+                self.star_sprites.empty()
+                self.update_star_sprites()
+            elif self.level == "character_selection":
+                pygame.display.update()
+            elif self.level == "stage_one":
+                self.screen.blit(self.stage_background, (0, (rel_y - self.stage_background.get_rect().height)))
+                self.load_asteroids()
+                if pygame.sprite.spritecollide(self.ship, self.asteroid_sprites, False):
+                    self.ship.image = load_image("assets/ship_explosion.png")
+                    if self.ship.is_alive:
+                        self.lives -= 1
+                        self.time_hit = time.time()
+                        # Update health bar image according to the number of PyMain.lives remaining
+                        self.health_bar_surface = load_image({
+                            "0": "assets/health_bar_0.png",
+                            "1": "assets/health_bar_33.png",
+                            "2": "assets/health_bar_67.png",
+                            "3": "assets/health_bar_33.png",
+                            "4": "assets/health_bar_45.png",
+                            "5": "assets/health_bar_56.png",
+                            "6": "assets/health_bar_67.png",
+                            "7": "assets/health_bar_78.png",
+                            "8": "assets/health_bar_89.png"
+                }[str(self.lives)])
+                    self.ship.is_alive = False
+                # Create new Ship object and reset stage_one after collision
+                if int(self.time_hit + 1.5) == int(time.time()):
+                    self.ship_sprites.empty()
+                    self.stage_one(True)
+                self.asteroid_sprites.draw(self.screen)
+                self.move_asteroids()
+                self.screen.blit(self.health_bar_surface, [215, 855])
+                self.font_score = load_fonts("Score: %d" % self.score, 20, (255, 255, 255))
+                self.screen.blit(self.font_score, [1180, 870])
+                self.ship_sprites.draw(self.screen)
+                pygame.display.update()
+                if self.ship.is_alive:
+                    self.score += 1
+                # Creates stage_one scrolling background
+                y += 1
+                if rel_y < 899:
+                    self.screen.blit(self.stage_background, (0, rel_y))
+            elif self.level == "game_over":
+                # Reset initials when user uses backspace
+                pygame.draw.rect(self.screen, (0,0,0), (0, 750, 1400, 200))
+                pygame.draw.rect(self.screen, (0,0,0), (500, 500, 400, 200))
+                self.screen.blit(self.font_gameover, [290, 145])
+                self.screen.blit(self.font_final_score, [450, 300])
+                self.screen.blit(self.font_enter_initials, [350, 400])
+                self.font_player_initials = load_fonts("%s%s%s" % (first_initial, middle_initial, last_initial), 90, (255, 255, 255))
+                self.screen.blit(self.font_player_initials, [550, 550])
+                pygame.display.update()
+
+            # Event Handler
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == "escape":
+                        # Exit game when user presses the escape key
+                        sys.exit()
+                if self.level == "stage_one":
+                    if event.type == pygame.KEYDOWN and self.ship.is_alive:
+                            self.ship.move(event.key, self.game_screen_rect)
+                elif self.level == "intro":
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == K_RETURN:
+                            self.level = "character_selection"
+                            self.load_character_selection()
+                elif self.level == "character_selection":
+                    #Record current mouse position
+                    mouse = pygame.mouse.get_pos()
+                    if mouse[0] in range(150, 380) and mouse[1] in range(700, 768):
+                        #Create button hover effect
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (150, 700, 250, 68)))
+                        image_group.draw(self.screen)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            #Set ship.image according to mouse position
+                            self.level = "stage_one"
+                            self.character = "assets/Ship1.png"
+                            self.stage_one(False)
+                    elif mouse[0] in range(580, 810) and mouse[1] in range(700, 768):
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (580, 700, 250, 68)))
+                        image_group.draw(self.screen)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.level = "stage_one"
+                            self.character = "assets/Ship2.png"
+                            self.stage_one(False)
+                    elif mouse[0] in range(1010, 1260) and mouse[1] in range(700, 768):
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_success.png', (1010, 700, 250, 68)))
+                        image_group.draw(self.screen)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.level = "stage_one"
+                            self.character = "assets/Ship3.png"
+                            self.stage_one(False)
+                    else:
+                        #Reset button image to inactive state when mouse not in rectangular coordinates
+                        image_group = pygame.sprite.Group(Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
+                                                          Static_Image('assets/button_inactive.png', (580, 700, 250, 68)),
+                                                          Static_Image('assets/button_inactive.png', (1010, 700, 250, 68)))
+                        image_group.draw(self.screen)
+                elif self.level == "game_over":
+                    full_initials = "%s%s%s" % (first_initial, middle_initial, last_initial)
+                    if event.type == pygame.KEYDOWN:
+                        key = pygame.key.name(event.key)
+
+                        if key == "backspace" or key == "delete":
+
+                            if last_initial != "-":
+                                last_initial = "-"
+                            elif middle_initial != "-":
+                                middle_initial = "-"
+                            elif first_initial != "-":
+                                first_initial = "-"
+
+                        if key in string.ascii_letters:
+                            if first_initial == "-":
+                                first_initial = pygame.key.name(event.key).upper()
+                            elif middle_initial == "-":
+                                middle_initial = pygame.key.name(event.key).upper()
+                            elif last_initial == "-":
+                                last_initial = pygame.key.name(event.key).upper()
+
+                        elif key == "return" and "-" not in full_initials:
+                            #Save player initials and score to player_scores.txt
+                            PyMain.player_scores_tuple.append((full_initials, self.score))
+                            try:
+                                saved_file = open("player_scores.txt", "wb")
+                                pickle.dump(PyMain.player_scores_tuple, saved_file)
+                                saved_file.close()
+                            except:
+                                print "Failed to save file."
+                            self.level = "restart"
+        #Reset game by creating new PyMain object
+        MainWindow = PyMain()
+        MainWindow.MainLoop()
     
     def game_over(self):
         # Clear previous surface
