@@ -352,7 +352,25 @@ class PyMain(object):
             if x not in range(290, 1135) or y not in range(145, 420):
                 self.star_sprites.add(Stars(pygame.Rect(x, y, 50, 50), random.choice(colors)))
     
-        
+    def load_asteroids(self):
+        asteroid_image_array = ["assets/asteroid1.png", "assets/asteroid2.png", "assets/asteroid3.png", "assets/asteroid4.png"]
+        if int(self.stage_time + 30) < int(time.time()):
+            if random.random() < 0.3:
+                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
+                                                   random.randint(20, self.width)))
+        elif int(self.stage_time + 15) < int(time.time()):
+            if random.random() < 0.2:
+                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
+                                                   random.randint(20, self.width)))
+        else:
+            if random.random() < 0.1:
+                self.asteroid_sprites.add(Asteroid(random.choice(asteroid_image_array),
+                                                   random.randint(20, self.width)))
+    def move_asteroids(self):
+        for asteroid in self.asteroid_sprites.sprites():
+            asteroid.move(self.screen_rect)
+            self.asteroid_sprites.add(asteroid)
+             
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
         pygame.sprite.Sprite.__init__(self)
