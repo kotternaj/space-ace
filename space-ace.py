@@ -129,6 +129,7 @@ class PyMain(object):
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == "escape":
                         # Exit game when user presses the escape key
+                        pygame.quit()
                         sys.exit()
                 if self.level == "stage_one":
                     if event.type == pygame.KEYDOWN and self.ship.is_alive:
@@ -213,13 +214,13 @@ class PyMain(object):
         # Load text font and images
         self.font_gameover = load_fonts('Game Over', 95, (42, 247, 44))
         self.font_final_score = load_fonts('Score: %d' % self.score, 50, (255, 255, 255))
-        self.enter_initials = load_fonts('Enter initials: ', 50, 2(55, 255, 255))
+        self.font_enter_initials = load_fonts('Enter initials: ', 50, (255, 255, 255))
     
     def load_character_selection(self):
         # Clear previous surface
         self.screen.fill((0,0,0))
         self.star_sprites.clear(self.screen, self.background)
-        self.asteroid_sprites.empty()
+        self.star_sprites.empty()
         # Load text font and images
         font_choose_pilot = load_fonts('Choose your pilot: ', 50, (255, 255, 255))
         text_name_junior = load_fonts('Name: Junior', 30, (255, 255, 255))
@@ -236,14 +237,11 @@ class PyMain(object):
         self.screen.blit(text_lives, [95, 530])
         self.screen.blit(text_lives, [525, 530])
         self.screen.blit(text_lives, [955, 530])
-        self.screen.blit(text_ship, [95, 530])
+        self.screen.blit(text_ship, [95, 580])
         self.screen.blit(text_ship, [525, 580])
         self.screen.blit(text_ship, [955, 580])
         # Create Static_Image objects
-        static_image_group = pygame.sprite.Group(Static_Image('assets/tbd.png', (105, 175, 144, 119)),
-                                                 Static_Image('assets/Cat2.png', (535, 175, 144, 119)),
-                                                 Static_Image('assets/Cat3.png', (965, 175, 144, 119)),
-                                                 Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
+        static_image_group = pygame.sprite.Group(Static_Image('assets/button_inactive.png', (150, 700, 250, 68)),
                                                  Static_Image('assets/button_inactive.png', (580, 700, 250, 68)),
                                                  Static_Image('assets/button_inactive.png', (1010, 700, 250, 68)),
                                                  Static_Image('assets/Ship1.png', (285, 580, 75, 73)),
@@ -370,7 +368,7 @@ class PyMain(object):
         for asteroid in self.asteroid_sprites.sprites():
             asteroid.move(self.screen_rect)
             self.asteroid_sprites.add(asteroid)
-             
+
 class Ship(pygame.sprite.Sprite):
     def __init__(self, character):
         pygame.sprite.Sprite.__init__(self)
