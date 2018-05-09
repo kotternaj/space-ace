@@ -9,7 +9,7 @@ def load_image(file_name):
     return image
 
 def load_fonts(text, size, color):
-    font = pygame.font.Font('freesansbold.tff, size')
+    font = pygame.font.Font('assets/PressStart2P-Regular.ttf', size)
     space_font = font.render(text, 1, color)
     return space_font
 
@@ -212,7 +212,7 @@ class PyMain(object):
         self.asteroid_sprites.empty()
         # Load text font and images
         self.font_gameover = load_fonts('Game Over', 95, (42, 247, 44))
-        self.font_final_score = load_fonts('Score: %d' %self.score 50, (255, 255, 255))
+        self.font_final_score = load_fonts('Score: %d' % self.score, 50, (255, 255, 255))
         self.enter_initials = load_fonts('Enter initials: ', 50, 2(55, 255, 255))
     
     def load_character_selection(self):
@@ -316,7 +316,7 @@ class PyMain(object):
 
         self.score_cover = pygame.Surface((300, 300))
         self.score_cover.fill((0,0,0))
-        font_space_header = load_fonts('Space Ace', 95 (42, 247, 44))
+        font_space_header = load_fonts('Space Ace', 95, (42, 247, 44))
         font_press_to_start = load_fonts('Press Enter to Start', 30, (191, 0, 255))
         rfont_space_header = self.screen.blit(font_space_header, [290, 145])
         rfont_press_to_start = self.screen.blit(font_press_to_start, [415, 375])
@@ -390,7 +390,7 @@ class Asteroid(pygame.sprite.Sprite):
 
 class Stars(pygame.sprite.Sprite):
     def __init__(self, rect, color):
-        pygame.sprite.Sprite.__init_(self)
+        pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((3,3))
         self.image = self.image.convert()
         self.image.fill(color)
@@ -403,4 +403,5 @@ class Static_Image(pygame.sprite.Sprite):
         self.rect = pygame.Rect(rect)
 
 if __name__ == '__main__':
-    main()
+    MainWindow = PyMain()
+    MainWindow.MainLoop()
